@@ -1,6 +1,6 @@
 import { StyleSheet, Text, PermissionsAndroid} from 'react-native';
 import {useEffect} from 'react';
-import { useCameraDevices, Camera} from 'react-native-vision-camera';
+import { useCameraDevices, Camera, Frame, useFrameProcessor} from 'react-native-vision-camera';
 
 // AndroidManifest.xml has android.permission.CAMERA permission so don't need to call below permission request right now.
 // credit: https://github.com/mrousavy/react-native-vision-camera/issues/1133#issuecomment-1186484342 
@@ -28,6 +28,14 @@ const requestCameraPermission = async () => {
     }
   };
 
+/**
+ * Scans QR codes.
+ */
+export function scanQRCodes(frame: Frame): string[] {
+  'worklet'
+  const result = __scanQRCodes(frame)
+  console.log(result) // <-- "cat"
+}
 
 export default function App() {
   
@@ -37,7 +45,7 @@ export default function App() {
   //   requestCameraPermission();
   // }, []);
   
-
+  scanQRCodes(frame)
   const devices = useCameraDevices()
   const device = devices.back
 
@@ -45,6 +53,7 @@ export default function App() {
   else{
     return (
       <Camera
+      frameProcessor={frameProcessor}
       style={StyleSheet.absoluteFill}
       device={device}
       isActive={true}>
