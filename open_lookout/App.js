@@ -31,10 +31,14 @@ const requestCameraPermission = async () => {
 /**
  * Scans QR codes.
  */
-export function scanQRCodes(frame: Frame): string[] {
-  'worklet'
-  const result = __scanQRCodes(frame)
-  console.log(result) // <-- "cat"
+// export function scanQRCodes(frame: Frame): string[] {
+//   'worklet'
+//   const result = __scanQRCodes(frame)
+//   console.log(result) // <-- "cat"
+// }
+function scanQRCodes(frame) {
+  'worklet';
+  return __scanQRCodes(frame);
 }
 
 export default function App() {
@@ -45,7 +49,14 @@ export default function App() {
   //   requestCameraPermission();
   // }, []);
   
-  scanQRCodes(frame)
+  // scanQRCodes(frame)
+
+  const frameProcessor = useFrameProcessor((frame) => {
+    'worklet'
+    const qrCodes = scanQRCodes(frame)
+    console.log(`QR Codes in Frame: ${qrCodes}`)
+  }, [])
+  
   const devices = useCameraDevices()
   const device = devices.back
 
